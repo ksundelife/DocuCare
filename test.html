@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        const arr = []
+        const N = 10000
+        console.log('Количество элементов: ', N)
+        const time1 = performance.now()
+        for (let i = 0; i < N; i++){
+            arr.push(i)//Math.round(Math.random(100)))
+        }
+        const delta1 = (performance.now() - time1) * 1000
+        console.log('Время выполнения ', N, ' итераций', delta1)
+
+        const t =  delta1 / N
+        console.log('Время выполнения одной итерации: ', t)
+
+        const time2 = performance.now();
+        const set = new Set(arr)
+        const delta2 = (performance.now() - time2) * 1000
+        console.log('Время создания Set', delta2)
+        console.log('Количество итераций при создании Set: ', delta2 / t)
+
+        const log2 =  Math.log(N)
+        console.log('Квадрат логарифма ', N, ': ', N * log2)
+        const k = delta2 / t / log2
+        console.log('Коэффициент: ', k)
+    </script>
+</body>
+</html>

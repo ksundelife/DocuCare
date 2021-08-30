@@ -1,0 +1,65 @@
+version: "3.5"
+services:
+  agile-redis:
+    image: redis:alpine
+    container_name: agile-redis
+    volumes:
+      - agile-redis:/data
+    ports:
+      - "16377:6379"
+    networks:
+      - agile
+
+  agile-mysql:
+    image: mysql:5.7.22
+    container_name: agile-mysql
+    working_dir: /application
+    volumes:
+      - agile-mysql:/var/lib/mysql/
+    environment:
+      MYSQL_ROOT_PASSWORD: TDH765DKSH99FHDK5JUJ
+      MYSQL_DATABASE: app
+    ports:
+      - "2330:3306"
+    networks:
+      - agile
+
+  agile-webserver:
+    image: nginx:alpine
+    container_name: agile-webserver
+    working_dir: /application
+    volumes:
+      - ../../:/application
+      - ./phpdocker/nginx:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    networks:
+      - agile
+    depends_on:
+      - agile-php-fpm
+
+  agile-php-fpm:
+    build: phpdocker/php-fpm
+    container_name: agile-php-fpm
+    working_dir: /application
+    volumes:
+      - ../../:/application
+      - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+    ports:
+      - "9000"
+    networks:
+      - agile
+    environment:
+      APP_ENV: local
+      CONTAINER_ROLE: app
+
+networks:
+  agile:
+    driver: bridge
+
+volumes:
+  agile-mysql:
+    driver: "local"
+  agile-redis:
+    driver: "local"
+
